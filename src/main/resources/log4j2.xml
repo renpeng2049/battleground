@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" strict="true" name="XMLConfigTest"
+               monitorInterval="60">
+
+    <Properties>
+        <Property name="LOG_HOME">${logback.webapp_portal.path}</Property>
+        <Property name="LOG_LEVEL">${LOG_LEVEL}</Property>
+        <Property name="monitorlogpath">${monitorlog.path}</Property>
+        <Property name="appname">${monitorlog.web.portal}</Property>
+        <Property name="infoHistory">240</Property>
+        <Property name="errorHistory">10</Property>
+        <Property name="monitorHistory">10</Property>
+    </Properties>
+    <Filter type="ThresholdFilter" level="trace"/>
+
+    <Appenders>
+
+        <Appender name="STDOUT" type="Console" target="SYSTEM_OUT">
+            <ThresholdFilter level="${STD_LOG_LEVEL}"
+                             onMatch="ACCEPT" onMismatch="DENY"/>
+            <Layout type="PatternLayout"
+                    pattern="%d{yyyy-MM-dd HH:mm:ss:SSS} %X{request_id} %thread %-5level %c{1} - %m%n"/>
+        </Appender>
+        <Appender name="FILE" type="RollingRandomAccessFile"
+                  fileName="${LOG_HOME}/info.log"
+                  filePattern="${LOG_HOME}/$${date:yyyy_MM_dd}/info.log.%d{yyyy-MM-dd-HH}.gz">
+            <ThresholdFilter level="${LOG_LEVEL}"
+                             onMatch="ACCEPT" onMismatch="DENY"/>
+            <Layout type="PatternLayout"
+                    pattern="%d{yyyy-MM-dd HH:mm:ss:SSS} %X{request_id} %thread %-5level %c{1} - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="${infoHistory}"/>
+        </Appender>
+        <Appender name="asyncFile" type="Async">
+            <AppenderRef ref="FILE"/>
+            <includeLocation>true</includeLocation>
+        </Appender>
+        <Appender name="ERROR_FILE" type="RollingRandomAccessFile"
+                  fileName="${LOG_HOME}/error.log"
+                  filePattern="${LOG_HOME}/$${date:yyyy_MM_dd}/error.log.%d{yyyy-MM-dd}">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT"
+                             onMismatch="DENY"/>
+            <Layout type="PatternLayout"
+                    pattern="%d{yyyy-MM-dd HH:mm:ss:SSS} %X{request_id} %thread %-5level %c{1} - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="${errorHistory}"/>
+        </Appender>
+        <Appender name="zabbixAppender" type="RollingRandomAccessFile"
+                  fileName="${monitorlogpath}/${appname}/zabbix.log"
+                  filePattern="${monitorlogpath}/${appname}/zabbix.log-%d{yyyy-MM-dd}.gz">
+            <Layout type="PatternLayout" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="${monitorHistory}"/>
+        </Appender>
+        <Appender name="opentsdbAppender" type="RollingRandomAccessFile"
+                  fileName="${monitorlogpath}/${appname}/opentsdb.log"
+                  filePattern="${monitorlogpath}/${appname}/opentsdb.log-%d{yyyy-MM-dd}.gz">
+            <Layout type="PatternLayout" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="${monitorHistory}"/>
+        </Appender>
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="asyncFile"/>
+            <AppenderRef ref="ERROR_FILE"/>
+        </Root>
+        <Logger name="org.apache.zookeeper" level="warn"/>
+        <Logger name="com.baidu.disconf" level="warn"/>
+        <Logger name="org.apache.ibatis" level="warn"/>
+        <logger name="org.springframework.scheduling" level="error"/>
+        <Logger name="org.springframework" level="error"/>
+        <!-- monitor logger -->
+        <Logger name="opentsdb" level="info" additivity="false">
+            <AppenderRef ref="opentsdbAppender"></AppenderRef>
+        </Logger>
+
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd" default-autowire="byName">
+
+
+    <context:annotation-config/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <context:component-scan base-package="com.soyoung"/>
+
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>-->
+
+    <!--
+    <bean class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis.session.persist.ip}"/>
+        <property name="port" value="${redis.session.persist.port}"/>
+        <property name="password" value="${redis.cache.password}"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"></property>
+    </bean>
+
+
+    <bean id="redisTemplate"
+          class="org.springframework.data.redis.core.StringRedisTemplate">
+        <property name="connectionFactory">
+            <bean id="jedisConnFactorySlive"
+                  class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+                  p:hostName="${slive.redis.master.ip}"
+                  p:port="${slive.redis.master.port}"
+                  p:password="${slive.redis.conn.password}"
+                  p:database="${slive.redis.master.db}"
+                  p:usePool="true"
+            >
+                <property name="poolConfig">
+                    <bean id="jedisPoolConfigSlive" class="redis.clients.jedis.JedisPoolConfig"
+                          p:maxTotal="${slive.redis.max.active}"
+                          p:minIdle="${slive.redis.min.idle}"
+                          p:maxIdle="${slive.redis.max.idle}"
+                          p:maxWaitMillis="${slive.redis.max.wait}"
+                          p:testWhileIdle="true"
+                          p:testOnBorrow="false"
+                          p:testOnReturn="false"
+                          p:testOnCreate="false"/>
+                </property>
+
+
+            </bean>
+        </property>
+    </bean>
+    -->
+
+</beans>
